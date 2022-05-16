@@ -1,10 +1,17 @@
 import { StyleSheet, View } from 'react-native';
-import React from 'react';
+import React, { useLayoutEffect } from 'react';
 import { KeyboardAvoidingView, ImageBackground, Platform } from 'react-native';
 import { Text, Divider } from 'react-native-elements';
 import Background from '../assets/Backgroundapp.png';
 
 const UserPage = ({ navigation, data }) => {
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerBackTitle: 'Users',
+      headerTitle: data.name,
+    });
+  }, [navigation]);
+
   return (
     <ImageBackground
       source={Background}
@@ -41,7 +48,6 @@ const UserPage = ({ navigation, data }) => {
             <Divider orientation="vertical" width={10} />
           </View>
         </View>
-        {/* <View style={{ height: 100 }} /> */}
       </KeyboardAvoidingView>
     </ImageBackground>
   );
@@ -53,7 +59,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    marginTop: 50,
+    marginTop: 10,
     padding: 20,
   },
   title: {

@@ -1,10 +1,17 @@
 import { StyleSheet, View } from 'react-native';
-import React from 'react';
+import React, { useLayoutEffect } from 'react';
 import { KeyboardAvoidingView, ImageBackground, Platform } from 'react-native';
 import { Text, Divider } from 'react-native-elements';
 import Background from '../assets/Backgroundapp.png';
 
 const PostPage = ({ navigation, data }) => {
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerBackTitle: 'Posts',
+      headerTitle: 'Post',
+    });
+  }, [navigation]);
+
   return (
     <ImageBackground
       source={Background}
@@ -20,7 +27,6 @@ const PostPage = ({ navigation, data }) => {
             <Text style={styles.story}>{data?.body}</Text>
           </View>
         </View>
-        <View style={{ height: 100 }} />
       </KeyboardAvoidingView>
     </ImageBackground>
   );
@@ -32,7 +38,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    marginTop: 50,
+    marginTop: 10,
     padding: 20,
   },
   title: {
@@ -41,6 +47,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     marginBottom: 15,
     alignSelf: 'center',
+    textAlign: 'center',
   },
   box: {
     width: '95%',
@@ -55,11 +62,9 @@ const styles = StyleSheet.create({
   story: {
     color: '#FFF',
     fontSize: 14,
+    lineHeight: 30,
     alignSelf: 'baseline',
+    textAlign: 'left',
     borderBottomColor: '#00F0FF',
-    marginBottom: 8,
-  },
-  divider: {
-    marginBottom: 20,
   },
 });

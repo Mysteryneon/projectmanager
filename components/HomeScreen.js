@@ -38,7 +38,6 @@ const HomeScreen = ({ navigation, data }) => {
             keyExtractor={(item) => item.id}
           />
         </View>
-        <View style={{ height: 100 }} />
       </KeyboardAvoidingView>
     </ImageBackground>
   );
@@ -50,7 +49,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    marginTop: 50,
+    marginTop: 100,
     padding: 20,
   },
   title: {
@@ -61,7 +60,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   item: {
-    width: '95%',
+    width: '100%',
     fontSize: 12,
     paddingVertical: 10,
     paddingLeft: 18,

@@ -1,19 +1,26 @@
 import { FlatList, StyleSheet, View } from 'react-native';
 import { Button, Text } from 'react-native-elements';
-import React from 'react';
+import React, { useLayoutEffect } from 'react';
 import { KeyboardAvoidingView, ImageBackground, Platform } from 'react-native';
 import Background from '../assets/Backgroundapp.png';
 
 const PostsScreen = ({ navigation, data }) => {
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerTitle: 'Posts',
+    });
+  }, [navigation]);
+
   const renderItem = ({ item }) => (
     <Button
       title={item.title}
       buttonStyle={{
         backgroundColor: 'transparent',
         width: '100%',
-        justifyContent: 'flex-start',
+        alignItems: 'center',
+        justifyContent: 'center',
       }}
-      style={styles.item}
+      containerStyle={styles.item}
       onPress={() =>
         navigation.navigate(
           `${item.id}${item.title.replace(/ /g, '-').split(0, 24)[0]}`
@@ -40,7 +47,6 @@ const PostsScreen = ({ navigation, data }) => {
             keyExtractor={(item) => item.id}
           />
         </View>
-        <View style={{ height: 100 }} />
       </KeyboardAvoidingView>
     </ImageBackground>
   );
@@ -52,7 +58,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',
-    marginTop: 50,
+    marginTop: 100,
     padding: 20,
   },
   title: {
@@ -63,7 +69,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   item: {
-    width: '95%',
+    width: '100%',
     fontSize: 12,
     paddingVertical: 10,
     paddingLeft: 18,
