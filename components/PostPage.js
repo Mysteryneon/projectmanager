@@ -1,14 +1,65 @@
-import { StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import { StyleSheet, View } from 'react-native';
+import React from 'react';
+import { KeyboardAvoidingView, ImageBackground, Platform } from 'react-native';
+import { Text, Divider } from 'react-native-elements';
+import Background from '../assets/Backgroundapp.png';
 
-const PostPage = () => {
+const PostPage = ({ navigation, data }) => {
   return (
-    <View>
-      <Text>PostPage</Text>
-    </View>
-  )
-}
+    <ImageBackground
+      source={Background}
+      style={{ width: '100%', height: '100%' }}
+    >
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={{ flex: 1 }}
+      >
+        <View style={styles.container}>
+          <Text style={styles.title}>{data?.title}</Text>
+          <View style={styles.box}>
+            <Text style={styles.story}>{data?.body}</Text>
+          </View>
+        </View>
+        <View style={{ height: 100 }} />
+      </KeyboardAvoidingView>
+    </ImageBackground>
+  );
+};
 
-export default PostPage
+export default PostPage;
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    marginTop: 50,
+    padding: 20,
+  },
+  title: {
+    color: '#3D1273',
+    fontSize: 24,
+    fontWeight: '600',
+    marginBottom: 15,
+    alignSelf: 'center',
+  },
+  box: {
+    width: '95%',
+    fontSize: 12,
+    paddingVertical: 10,
+    padding: 20,
+    backgroundColor: 'rgba(30, 31, 32, 0.25)',
+    borderRadius: 8,
+    marginTop: 30,
+    justifyContent: 'flex-start',
+  },
+  story: {
+    color: '#FFF',
+    fontSize: 14,
+    alignSelf: 'baseline',
+    borderBottomColor: '#00F0FF',
+    marginBottom: 8,
+  },
+  divider: {
+    marginBottom: 20,
+  },
+});
