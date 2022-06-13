@@ -1,10 +1,37 @@
-import { StyleSheet, View } from 'react-native';
-import React, { useLayoutEffect } from 'react';
-import { KeyboardAvoidingView, ImageBackground, Platform } from 'react-native';
-import { Text, Divider } from 'react-native-elements';
+import { FlatList, ImageBackground, KeyboardAvoidingView, Platform, ScrollView, StyleSheet, View } from 'react-native';
+import React, { useCallback, useEffect, useLayoutEffect, useState } from 'react';
+import { Text } from 'react-native-elements';
 import Background from '../assets/Backgroundapp.png';
+import axios from "axios";
+import { Card } from "@rneui/themed";
 
-const PostPage = ({ navigation, data }) => {
+const Comment = ({name, email, body}) => {
+  return <Card style={{backgroundColor: 'rgba(30, 31, 32, 0.25)'}}>
+    <Text>{body}</Text>
+    <View style={{flex: 1, flexDirection: 'column', alignItems: 'end', margin: 4}}>
+      <Text>{name}</Text>
+      <Text>{email}</Text>
+    </View>
+  </Card>
+}
+const PostPage = ({navigation, route: {params: {postDetail}}}) => {
+  const [comments, setComments] = useState([])
+
+  const fetchComments = useCallback(async () => {
+    try {
+      const {data} = await axios
+        .get(`https://jsonplaceholder.typicode.com/posts/${postDetail?.id}/comments`)
+      setComments(data)
+    } catch (e) {
+      alert(e)
+    }
+  }, [postDetail])
+
+  useEffect(async () => {
+    await fetchComments()
+  }, [fetchComments])
+
+
   useLayoutEffect(() => {
     navigation.setOptions({
       headerBackTitle: 'Posts',
@@ -13,22 +40,33 @@ const PostPage = ({ navigation, data }) => {
   }, [navigation]);
 
   return (
-    <ImageBackground
-      source={Background}
-      style={{ width: '100%', height: '100%' }}
-    >
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={{ flex: 1 }}
+    <ScrollView>
+      <ImageBackground
+        source={Background}
+        style={{width: '100%', height: '100%'}}
       >
-        <View style={styles.container}>
-          <Text style={styles.title}>{data?.title}</Text>
-          <View style={styles.box}>
-            <Text style={styles.story}>{data?.body}</Text>
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          style={{flex: 1}}
+        >
+          <View style={styles.container}>
+            <Text style={styles.title}>{postDetail?.title}</Text>
+            <View style={styles.box}>
+              <Text style={styles.story}>{postDetail?.body}</Text>
+            </View>
+            <View style={styles.container}>
+              <Text style={styles.title}>Comments</Text>
+              <FlatList
+                style={{width: '100%'}}
+                data={comments}
+                renderItem={({item}) => <Comment {...item}/>}
+                keyExtractor={(item) => item.id}
+              />
+            </View>
           </View>
-        </View>
-      </KeyboardAvoidingView>
-    </ImageBackground>
+        </KeyboardAvoidingView>
+      </ImageBackground>
+    </ScrollView>
   );
 };
 

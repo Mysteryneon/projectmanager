@@ -1,11 +1,28 @@
-import { FlatList, StyleSheet, View } from 'react-native';
+import { FlatList, ImageBackground, KeyboardAvoidingView, Platform, StyleSheet, View } from 'react-native';
 import { Button, Text } from 'react-native-elements';
-import React from 'react';
-import { KeyboardAvoidingView, ImageBackground, Platform } from 'react-native';
+import React, { useCallback, useEffect, useState } from 'react';
 import Background from '../assets/Backgroundapp.png';
+import axios from "axios";
+import { ROUTES } from "../constants";
 
-const HomeScreen = ({ navigation, data }) => {
-  const renderItem = ({ item }) => (
+const HomeScreen = ({navigation}) => {
+  const [users, setUsers] = useState([])
+
+  const fetchUsers = useCallback(async () => {
+    try {
+      const {data} = await axios
+        .get('https://jsonplaceholder.typicode.com/users')
+      setUsers(data)
+    } catch (e) {
+      alert(e)
+    }
+  }, [])
+
+  useEffect(async () => {
+    await fetchUsers()
+  }, [fetchUsers])
+
+  const renderItem = ({item}) => (
     <Button
       title={`${item.id}) ${item.name}`}
       buttonStyle={{
@@ -15,7 +32,7 @@ const HomeScreen = ({ navigation, data }) => {
       }}
       containerStyle={styles.item}
       onPress={() =>
-        navigation.navigate(`${item.id}${item.name.replace(/ /g, '-')}`)
+        navigation.navigate(ROUTES.USER_DETAIL, {userDetail: item})
       }
     />
   );
@@ -32,8 +49,8 @@ const HomeScreen = ({ navigation, data }) => {
         <View style={styles.container}>
           <Text style={styles.title}>Users List</Text>
           <FlatList
-            style={{ width: '100%' }}
-            data={data}
+            style={{width: '100%'}}
+            data={users}
             renderItem={renderItem}
             keyExtractor={(item) => item.id}
           />
