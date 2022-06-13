@@ -1,17 +1,34 @@
-import { FlatList, StyleSheet, View } from 'react-native';
+import { FlatList, ImageBackground, KeyboardAvoidingView, Platform, StyleSheet, View } from 'react-native';
 import { Button, Text } from 'react-native-elements';
-import React, { useLayoutEffect } from 'react';
-import { KeyboardAvoidingView, ImageBackground, Platform } from 'react-native';
+import React, { useCallback, useEffect, useLayoutEffect, useState } from 'react';
 import Background from '../assets/Backgroundapp.png';
+import axios from "axios";
+import { ROUTES } from "../constants";
 
-const PostsScreen = ({ navigation, data }) => {
+const PostsScreen = ({navigation}) => {
+  const [posts, setPosts] = useState([])
+
+  const fetchPosts = useCallback(async () => {
+    try {
+      const {data} = await axios
+        .get('https://jsonplaceholder.typicode.com/posts')
+      setPosts(data)
+    } catch (e) {
+      alert(e)
+    }
+  }, [])
+
+  useEffect(async () => {
+    await fetchPosts()
+  }, [fetchPosts])
+
   useLayoutEffect(() => {
     navigation.setOptions({
       headerTitle: 'Posts',
     });
   }, [navigation]);
 
-  const renderItem = ({ item }) => (
+  const renderItem = ({item}) => (
     <Button
       title={item.title}
       buttonStyle={{
@@ -22,9 +39,7 @@ const PostsScreen = ({ navigation, data }) => {
       }}
       containerStyle={styles.item}
       onPress={() =>
-        navigation.navigate(
-          `${item.id}${item.title.replace(/ /g, '-').split(0, 24)[0]}`
-        )
+        navigation.navigate(ROUTES.POST_DETAIL, {postDetail: item})
       }
     />
   );
@@ -41,8 +56,8 @@ const PostsScreen = ({ navigation, data }) => {
         <View style={styles.container}>
           <Text style={styles.title}>Posts List</Text>
           <FlatList
-            style={{ width: '100%' }}
-            data={data}
+            style={{width: '100%'}}
+            data={posts}
             renderItem={renderItem}
             keyExtractor={(item) => item.id}
           />

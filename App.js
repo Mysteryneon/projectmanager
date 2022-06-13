@@ -6,11 +6,13 @@ import UsersIcon from 'react-native-vector-icons/FontAwesome5';
 import PostsIcon from 'react-native-vector-icons/MaterialIcons';
 import { StatusBar } from 'expo-status-bar';
 import axios from 'axios';
-
-import HomeScreen from './components/HomeScreen.js';
-import UserPage from './components/UserPage.js';
 import PostsScreen from './components/PostsScreen.js';
-import PostPage from './components/PostPage.js';
+import { ROUTES } from "./constants";
+import UserPage from "./components/UserPage";
+import PostPage from "./components/PostPage";
+import HomeScreen from "./components/HomeScreen";
+import AlbumScreen from "./components/AlbumScreen";
+import AlbumPage from "./components/AlbumPage";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -32,73 +34,79 @@ export default function App() {
   }, []);
 
   const globalScreenOptions = {
-    headerStyle: { backgroundColor: 'rgba(16, 169, 176, 1)' },
-    headerTitleStyle: { color: 'white' },
+    headerStyle: {backgroundColor: 'rgba(16, 169, 176, 1)'},
+    headerTitleStyle: {color: 'white'},
     headerTintColor: 'white',
   };
+  const UserStackNavigator = () => {
+    return <Stack.Navigator>
+      <Stack.Screen
+        name={ROUTES.USERS}
+        component={HomeScreen}
+        options={{headerShown: true}}
+      />
+      <Stack.Screen
+        name={ROUTES.USER_DETAIL}
+        component={UserPage}
+        options={{headerShown: true}}
+      />
+      <Stack.Screen
+        name={ROUTES.ALBUM_DETAIL}
+        component={AlbumPage}
+        options={{headerShown: true}}
+      />
+    </Stack.Navigator>
+  }
+  const PostStackNavigator = () => {
+    return <Stack.Navigator>
+      <Stack.Screen
+        name={ROUTES.POSTS}
+        component={PostsScreen}
+        options={{headerShown: true}}
+      />
+      <Stack.Screen
+        name={ROUTES.POST_DETAIL}
+        component={PostPage}
+        options={{headerShown: true}}
+      />
+    </Stack.Navigator>
+  }
 
   const BottomPanel = () => {
     return (
       <Tab.Navigator
-        screenOptions={({ route }) => ({
-          tabBarIcon: ({ focused, color, size }) => {
+        screenOptions={({route}) => ({
+          tabBarIcon: ({focused, color, size}) => {
             let iconName;
             if (route.name === 'Users') iconName = focused ? 'users' : 'users';
             else if (route.name === 'Posts')
               iconName = focused ? 'article' : 'article';
             return iconName === 'users' ? (
-              <UsersIcon name={iconName} size={size} color={color} />
+              <UsersIcon name={iconName} size={size} color={color}/>
             ) : (
-              <PostsIcon name={iconName} size={size} color={color} />
+              <PostsIcon name={iconName} size={size} color={color}/>
             );
           },
           tabBarActiveTintColor: '#3D1273',
           tabBarInactiveTintColor: 'gray',
         })}
       >
-        <Tab.Screen name="Users" options={{ headerShown: false }}>
-          {(props) => <HomeScreen {...props} data={users} />}
-        </Tab.Screen>
-        <Tab.Screen name="Posts" options={{ headerShown: false }}>
-          {(props) => <PostsScreen {...props} data={posts} />}
-        </Tab.Screen>
+        <Tab.Screen name="Users" options={{headerShown: false}} component={UserStackNavigator}/>
+        <Tab.Screen name="Posts" options={{headerShown: false}} component={PostStackNavigator}/>
       </Tab.Navigator>
     );
   };
 
   return (
     <NavigationContainer>
-      <StatusBar backgroundColor="#10A9B0" barStyle="light-content" />
+      <StatusBar backgroundColor="#10A9B0" barStyle="light-content"/>
       <Stack.Navigator screenOptions={globalScreenOptions}>
+        {/*{BottomPanel()}*/}
         <Stack.Screen
           name="BottomPanel"
           component={BottomPanel}
-          options={{ headerShown: false }}
+          options={{headerShown: false}}
         />
-
-        {users?.map((user) => {
-          return (
-            <Stack.Screen
-              key={user.id}
-              name={`${user.id}${user.name.replace(/ /g, '-')}`}
-            >
-              {(props) => <UserPage {...props} data={user} />}
-            </Stack.Screen>
-          );
-        })}
-
-        {posts?.map((post) => {
-          return (
-            <Stack.Screen
-              key={post.id}
-              name={`${post.id}${
-                post.title.replace(/ /g, '-').split(0, 24)[0]
-              }`}
-            >
-              {(props) => <PostPage {...props} data={post} />}
-            </Stack.Screen>
-          );
-        })}
       </Stack.Navigator>
     </NavigationContainer>
   );
